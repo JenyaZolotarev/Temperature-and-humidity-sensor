@@ -127,8 +127,6 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim1);
-  //count = __HAL_TIM_GetCounter(&htim1);    //read TIM2 counter value
-  //__HAL_TIM_SetCounter(&htim1, 0);         //reset counter after input capture interrupt occurs
 
   /* USER CODE END 2 */
 
@@ -138,7 +136,6 @@ int main(void)
   {
 	  printf("******* Waveshare! ******\r\n");
 	  HAL_GPIO_TogglePin(dht22_Vcc_GPIO_Port, dht22_Vcc_Pin);
-	  //CDC_Transmit_FS("Hello USB", 9);
 	  TIM1_delay_us(100);
 	  HAL_Delay(10);
 
