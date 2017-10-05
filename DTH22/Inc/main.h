@@ -56,11 +56,8 @@
 
 /* Private define ------------------------------------------------------------*/
 
-#define dht22_Vcc_Pin GPIO_PIN_1
-#define dht22_Vcc_GPIO_Port GPIOA
-#define dht22_data_Pin GPIO_PIN_2
-#define dht22_data_GPIO_Port GPIOA
-#define dht22_data_EXTI_IRQn EXTI2_IRQn
+#define DHT22_Data_Pin GPIO_PIN_2
+#define DHT22_Data_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 

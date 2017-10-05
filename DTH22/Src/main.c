@@ -52,6 +52,7 @@
 
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
+#include "dht22.h"
 
 
 /* USER CODE END Includes */
@@ -71,12 +72,7 @@ static void MX_TIM1_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-TIM1_delay_us(uint32_t delay_us)
-{
-  __HAL_TIM_SetCounter(&htim1, 0);         //reset counter after input capture interrupt occurs
-  //__HAL_TIM_GetCounter(&htim1);  //read TIM2 counter value
-  while (__HAL_TIM_GetCounter(&htim1)<delay_us);
-}
+
 
 int _write (int fd, char *ptr, int len)
 {
@@ -84,16 +80,12 @@ int _write (int fd, char *ptr, int len)
     return len;
 }
 
-int _read (int fd, char *ptr, int len)
-{
-	//CDC_Receive_FS((uint8_t*) ptr, (uint32_t *)len);
-	return 1;
-}
-
 
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+uint8_t res;
+float t,h;
 
 /* USER CODE END 0 */
 
@@ -128,15 +120,16 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim1);
 
+  DHT22_Init(DHT22_Data_GPIO_Port, DHT22_Data_Pin);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  printf("******* Waveshare! ******\r\n");
-	  HAL_GPIO_TogglePin(dht22_Vcc_GPIO_Port, dht22_Vcc_Pin);
-	  TIM1_delay_us(100);
+	  res = DHT22_Read(&t,&h);/**/
+	  printf("Humidity: %f Temperature: %f \r\n",h,t);
 	  HAL_Delay(10);
 
 
@@ -255,23 +248,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(dht22_Vcc_GPIO_Port, dht22_Vcc_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(DHT22_Data_GPIO_Port, DHT22_Data_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : dht22_Vcc_Pin */
-  GPIO_InitStruct.Pin = dht22_Vcc_Pin;
+  /*Configure GPIO pin : DHT22_Data_Pin */
+  GPIO_InitStruct.Pin = DHT22_Data_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(dht22_Vcc_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : dht22_data_Pin */
-  GPIO_InitStruct.Pin = dht22_data_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(dht22_data_GPIO_Port, &GPIO_InitStruct);
-
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+  HAL_GPIO_Init(DHT22_Data_GPIO_Port, &GPIO_InitStruct);
 
 }
 
