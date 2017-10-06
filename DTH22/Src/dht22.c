@@ -20,6 +20,7 @@ void DHT22_Init(GPIO_TypeDef * GPIOx, uint16_t GPIO_Pin){
   HAL_GPIO_WritePin(GPIO_Section, GPIO_Pin_Sensor, GPIO_PIN_SET);
   //initial delay for sensor start
   HAL_Delay(1000);
+
 }
 
 /**
@@ -61,7 +62,6 @@ DHT22_Result DHT22_Read(float *temp, float *hum){
   HAL_GPIO_WritePin(GPIO_Section, GPIO_Pin_Sensor, GPIO_PIN_RESET);
   HAL_Delay(18);
   HAL_GPIO_WritePin(GPIO_Section, GPIO_Pin_Sensor, GPIO_PIN_SET);
-  delayUs(30);
   DHT22_SwithPortToIN();
 
   // first 80us strobe into 0
@@ -82,7 +82,7 @@ DHT22_Result DHT22_Read(float *temp, float *hum){
     for(int i = 0; i < 8; ++i) {
 
       // before each bit should be 50us of 0 strobe
-      if (!waitPinState(GPIO_PIN_RESET,60,&pinStateUs)){
+      if (!waitPinState(GPIO_PIN_RESET,100,&pinStateUs)){
         return DHT22_DATA_NO_50_0_STROBE;
       }
       // wait until 50us strobe before data bit will end
