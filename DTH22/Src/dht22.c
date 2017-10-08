@@ -82,11 +82,11 @@ DHT22_Result DHT22_Read(float *temp, float *hum){
     for(int i = 0; i < 8; ++i) {
 
       // before each bit should be 50us of 0 strobe
-      if (!waitPinState(GPIO_PIN_RESET,100,&pinStateUs)){
+      if (!waitPinState(GPIO_PIN_RESET,70,&pinStateUs)){
         return DHT22_DATA_NO_50_0_STROBE;
       }
       // wait until 50us strobe before data bit will end
-      waitPinState(GPIO_PIN_SET,60,&pinStateUs);
+      waitPinState(GPIO_PIN_SET,70,&pinStateUs);
 
       //read data bit
       waitPinState(GPIO_PIN_RESET,75,&pinStateUs);
